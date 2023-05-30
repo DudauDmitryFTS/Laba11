@@ -29,37 +29,36 @@ import kotlin.concurrent.schedule
 
 @Composable
 fun HomeScreen(viewModel: MainViewModel) {
-    val posts: List<PostModel> by viewModel.allPosts.observeAsState(listOf())
-
+    val posts: List<PostModel>
+            by viewModel.allPosts.observeAsState(listOf())
     var isToastVisible by remember { mutableStateOf(false) }
     val onJoinClickAction: (Boolean) -> Unit = {joined ->
         isToastVisible = joined
         if (isToastVisible) {
             Timer().schedule(3000) {isToastVisible = false}
         }
-
-        Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                modifier = Modifier.background(
-                    color = MaterialTheme.colors.secondary
-                )
-            ) {
-                items(posts) {
-                    if (it.type == PostType.TEXT) {
-                        TextPost(it, onJoinButtonClick = onJoinClickAction)
-                    } else {
-                        ImagePost(it, onJoinButtonClick = onJoinClickAction)
-                    }
-                    Spacer(modifier = Modifier.height(6.dp))
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.background(
+                color = MaterialTheme.colors.secondary
+            )
+        ) {
+            items(posts) {
+                if (it.type == PostType.TEXT) {
+                    TextPost(it, onJoinButtonClick = onJoinClickAction)
+                } else {
+                    ImagePost(it, onJoinButtonClick = onJoinClickAction)
                 }
+                Spacer(modifier = Modifier.height(6.dp))
             }
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp)
-            ) {
-                JoinedToast(visible = isToastVisible)
-            }
+        }
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp)
+        ) {
+            JoinedToast(visible = isToastVisible)
         }
     }
 }
